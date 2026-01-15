@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para mi Amor ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            cursor: crosshair; /* Cursor de mira para más precisión */
+        }
+
+        h1 { margin-bottom: 10px; font-size: 2rem; }
+        p { font-size: 1.2rem; opacity: 0.8; }
+        
+        #pista {
+            margin-top: 20px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        /* MODIFICADO: Tesoro más pequeño */
+        #tesoro {
+            position: absolute;
+            width: 25px;   /* Antes 60px */
+            height: 25px;  /* Antes 60px */
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            opacity: 0; /* Invisible */
+        }
+
+        /* Pantalla de ganadora */
+        #mensaje-final {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: #d63384;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            text-align: center;
+            animation: aparecer 1s ease;
+        }
+
+        @keyframes aparecer {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .corazon-grande { font-size: 5rem; margin: 20px; }
+        .boton-reinicio {
+            padding: 10px 20px;
+            background: white;
+            color: #d63384;
+            border: none;
+            border-radius: 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Encuentra mi corazón ❤️</h1>
+    <p>Mueve el mouse (o toca la pantalla) para buscar...</p>
+    
+    <div id="pista">❄️ CONGELADO ❄️</div>
+    <div id="tesoro"></div>
+
+    <div id="mensaje-final">
+        <div class="corazon-grande">💖</div>
+        <h1>¡ME ENCONTRASTE!</h1>
+        <p>Eres lo mejor que me ha pasado.<br>Te amo muchísimo, Tamara.</p>
+        <button class="boton-reinicio" onclick="location.reload()">Jugar otra vez</button>
+    </div>
+
+    <script>
+        const tesoro = document.getElementById('tesoro');
+        const pista = document.getElementById('pista');
+        const mensajeFinal = document.getElementById('mensaje-final');
+        
+        // Poner el tesoro en un lugar aleatorio (márgenes ajustados)
+        const x = Math.random() * (window.innerWidth - 60);
+        const y = Math.random() * (window.innerHeight - 60);
+        
+        tesoro.style.left = x + 'px';
+        tesoro.style.top = y + 'px';
+
+        document.addEventListener('mousemove', (e) => {
+            actualizarPista(e.clientX, e.clientY);
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            actualizarPista(touch.clientX, touch.clientY);
+        });
+
+        function actualizarPista(mouseX, mouseY) {
+            const tesoroRect = tesoro.getBoundingClientRect();
+            const tesoroX = tesoroRect.left + (tesoroRect.width / 2);
+            const tesoroY = tesoroRect.top + (tesoroRect.height / 2);
+
+            const distancia = Math.sqrt(
+                Math.pow(mouseX - tesoroX, 2) + 
+                Math.pow(mouseY - tesoroY, 2)
+            );
+
+            // Rangos ajustados ligeramente para la dificultad
+            if (distancia < 40) { // Hay que estar MUY cerca para que diga "Te Quemas"
+                pista.innerHTML = "🔥 ¡TE QUEMAS! 🔥";
+                pista.style.color = "#ff3333";
+            } else if (distancia < 120) {
+                pista.innerHTML = "🔥 Caliente 🔥";
+                pista.style.color = "#ff6600";
+            } else if (distancia < 250) {
+                pista.innerHTML = "😐 Tibio 😐";
+                pista.style.color = "#ffcc00";
+            } else if (distancia < 450) {
+                pista.innerHTML = "❄️ Frío ❄️";
+                pista.style.color = "#66ccff";
+            } else {
+                pista.innerHTML = "🥶 Congelado 🥶";
+                pista.style.color = "#ffffff";
+            }
+        }
+
+        tesoro.addEventListener('click', ganar);
+        tesoro.addEventListener('touchstart', ganar);
+
+        function ganar() {
+            mensajeFinal.style.display = "flex";
+        }
+    </script>
+</body>
+</html>
